@@ -1,6 +1,7 @@
 # Towards epigenetic signature of RY and Telobox related cis-motifs 
 
 Welcome,
+
 here you can find the code I more detailed description on the code I used for my master's thesis.
 
 
@@ -10,10 +11,13 @@ here you can find the code I more detailed description on the code I used for my
 
 
 These scripts can be run in parallel:
+
 2a Cis-motif Annotation   OR
+
 2b Chromatin data preparation
 
 As soon as 2a and 2b are done, this script can be used:
+
 3. Motif distribution in H3K27me3+ and H3K27me3- genes 
 
 Next comes the GAT Analysis with 4.3 run in R.
