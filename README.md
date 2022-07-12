@@ -15,14 +15,17 @@ These two scripts can be run in parallel:
 2. [Chromatin data preparation](/2b.Chromatin_data_preparation.sh)
 
 As soon as 2a and 2b are done, this script can be used:
+
 3. [Motif distribution in H3K27me3+ and H3K27me3- genes](/3.Motif_distribution_in_H3K27me3+_and_H3K27me3-_genes.sh)
 
 Next comes the GAT Analysis with 4.3 run in R.
+
 4. [GAT-Annotation](/11_GAT_Annotation.sh)
 5. [GAT-Analysis](/12_GAT.sh)
 6. [GAT-Visualization](/)
 
 In the end comes the GO-Analysis with 5.2 and 5.3 run in R.
+
 7. [GO-Preparation](/)
 8. [TopGO-Analysis](/)
 9. [GO visualization](/)
