@@ -57,22 +57,25 @@ bedtools intersect -wa -a - -b ${EXTRAS}/CHROMLEN.bed | \				#intersection with 
 sort -k1,1 -k2,2n > ${PEAKS}/H3K27me3_intersect.bed					#sort
 
 ##Identification of H3K27me3 positive and negative genes##
+mkdir -p Genes
+GENES=/Genes
+
 
 #Filter gene positions:
-gff2bed < ${Downloads}/GENOME.GFF| awk '$8=="gene" {print $0}'> ${Annot}/GFF2BED_genes.bed
+gff2bed < ${DOWNLOADS}/GENOME.GFF| awk '$8=="gene" {print $0}'> GFF2BED_genes.bed
 
 cd ${EPIC}
 
 #Intersect H3K27me3-positions with gene positions and save genes overlapping with H3K27me3
 for i in *intersect.bed
 do
-bedtools intersect -a ${Annot}/GFF2BED_genes.bed -b $i -f 0.5 -u > ${Genes}/${i%me3_intersect.bed}K27+Genes.bed \
+bedtools intersect -a GFF2BED_genes.bed -b $i -f 0.5 -u > ${GENES}/${i%me3_intersect.bed}K27+Genes.bed \
 awk -vFS="\t" -vOFS="\t" 'split($4, a, /[:]/) >= 2 {print a[2]}' ${Genes}/${i%me3_intersect.bed}K27+Genes.bed | \
-sed 's/MtrunA17/&_/' - | awk /MtrunA17_Chr[1-9]/ | uniq > ${GENE}/${i%me3_intersect.bed}K27+Genes.txt
+sed 's/MtrunA17/&_/' - | awk /MtrunA17_Chr[1-9]/ | uniq > ${GENES}/${i%me3_intersect.bed}K27+Genes.txt
 done
 
-#Intersect H3K27me3-positions with gene positions and save genes not overlapping with Hh3K27me3
+#Intersect H3K27me3-positions with gene positions and save genes not overlapping with H3K27me3
 for i in *intersect.bed
 do
-bedtools intersect -a ${Annot}/GFF2BED_genes.bed -b $i -f 0.5 -v > ${Genes}/${i%me3_intersect.bed}K27-Genes.bed \
+bedtools intersect -a GFF2BED_genes.bed -b $i -f 0.5 -v > ${GENES}/${i%me3_intersect.bed}K27-Genes.bed \
 done
