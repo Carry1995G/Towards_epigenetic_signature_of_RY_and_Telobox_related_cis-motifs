@@ -2,7 +2,7 @@
 
 Welcome,
 
-here you can find the code I more detailed description on the code I used for my master's thesis.
+here you can find the more detailed description on the code I used for my master's thesis.
 
 
 ## Workflow:
