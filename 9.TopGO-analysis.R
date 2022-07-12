@@ -18,19 +18,19 @@ K27posGenes<-scan(
   what=""
 )
 
-RY=c("cluster_1", "cluster_2", "cluster_3", "cluster_4")
+RY=c("cluster_1", "cluster_2", "cluster_3", "cluster_4")              #Only contains clusters with high coverage
 Telobox=c("cluster_1", "cluster_2", "cluster_3", "cluster_4")
 Telolike=c("cluster_1", "cluster_2", "cluster_3", "cluster_4")
 
 Gene <- list(K27posGenes)
 Genebackground<-c("K27+_Genes")
-TargetGeneClusters=list.files(pattern="\\GenesinClusters\\.txt$", recursive=TRUE)
+TargetGeneClusters=list.files(pattern="\\GenesinClusters\\.txt$", recursive=TRUE)   ##filename used from 8. GO_Preparation
 
 #### Calculations ####
 
 for (i in 1:length(TargetGeneClusters)) {
     
- unfilteredTargetGenes <- read.table(TargetGeneClusters[[i]],sep="\t",header=TRUE, col.names = c("gene", "cluster"))  
+ unfilteredTargetGenes <- read.table(TargetGeneClusters[[i]],sep="\t",header=TRUE, col.names = c("gene", "cluster"))   ##file used from 8. GO_Preparation
   splitfilename=strsplit(TargetGeneClusters[[i]], '[-_|.]')[[1]]
   teloclustername=paste0(splitfilename[1],"_",splitfilename[2])
   
@@ -41,12 +41,6 @@ for (i in 1:length(TargetGeneClusters)) {
   } else if ( splitfilename[1]  ==  "Telolike" | splitfilename[1] == "telolike" ) {
     TargetGenes <- unfilteredTargetGenes %>% filter(cluster %in% Telolike) 
   }
-  
-  ###Gene files with p-values
-  #pvalue_targetGenes = rep(c(0.001),times=length(TargetGenes))
-  #names(pvalue_targetGenes)=c(TargetGenes)
-  #pvalue_allGenes = rep(c(1),times=19213)
-  #names(pvalue_allGenes)=c(Genes)   ###assign names to vector members
   
   ####predefined list of interesting genes
   for (g in 1) {
@@ -121,6 +115,7 @@ for (i in 1:length(TargetGeneClusters)) {
     FDR=results.BH$p.adj
     Gene_number=results.BH$Significant
     Group=rep(teloclustername,times=nrow(results.BH))
+    
     ##export table
     write.xlsx(allRes, file = paste0(ABR,"_",teloclustername,"_",Genebackground[g],".xlsx"), sheetName="Full_Results")
     print ("write xlsx done")
