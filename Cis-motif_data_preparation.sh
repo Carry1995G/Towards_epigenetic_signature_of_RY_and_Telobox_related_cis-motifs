@@ -1,12 +1,16 @@
 #!/bin/bash
 
-#### Motif annotation using fuzznuc (EMBOSS) ####
+#### Motif and negativ control annotation####
 
+##Motif annotation##
 cd /~
 
-#New folders and path shortcuts
+#new folders and path shortcuts
 mkdir -p Motif_GFF
 MOTIFGFF=/Motif_GFF
+
+#annotate all three motifs in a single loop using fuzznuc (EMBOSS)#
+#and save in three seperate gff files#
 
 patterns=("AAACCCTA" "[GA][CA]CCTA[GA]" "CATGCA")
 pnames=("Telobox" "Telolike" "RY")
@@ -15,10 +19,10 @@ do
 fuzznuc ./GENOME.fasta \
 	-pattern "${patterns[p]}" \
 	-complement \
-	-rformat gff ./Motif_GFF/OUTPUT.gff
+	-rformat gff ./Motif_GFF/${pnames[p]}_OUTPUT.gff
 done
 
-#Converting annotated GFF-files to BED and BAM-files#
+##Convert annotated GFF-files to BED and BAM-files##
 
 #New folders and path shortcuts
 mkdir -p Motif_BAM
@@ -29,7 +33,7 @@ BED=/Motif_BED
 BAM=/Motif_BAM
 BLACKLIST=/Blacklists #if available
 
-#Generate files containing chromosome length (different formats)#
+#Generate files containing chromosome length in different file formats using pyfaidx#
 cd ${Extras}
 pip install pyfaidx
 faidx GENOME.fasta -i chromsizes > Chromlen.txt #used for later steps
@@ -47,9 +51,9 @@ samtools index ${BAM}/${i%.gff}OUTPUT.bam
 gff2bed < $i > ${BED}/"${i%.gff}OUTPUT.bed"
 done
 
-#Generate shuffled motif BED- and BAM-files for negative control#
+##Obtain negative control by shuffling motif positions of BED file and save as BED and BAM-files##
 cd ${BED}
-for i in OUTPUT.bed
+for i in *OUTPUT.bed
 do
 bedtools shuffle -i $i \
 	-g ${EXTRAS}/Chromlen.chromsizes > ${BED}/${i%OUTPUT.bed}shuffle.bed	
@@ -58,7 +62,9 @@ bedtools bedtobam -i ${BED}/${i%OUTPUT.bed}shuffle.bed \
 samtools index ${BAM}/${i%OUTPUT.bed}shuffle.bam
 done
 
-#### Motif coverage calculation ####
+#### Motif coverage calculation and visualization ####
+
+#Motif coverage calculation with deeptools bamCoverage#
 
 #New folders and path shortcuts
 mkdir -p Motif_BIGWIG
@@ -68,4 +74,22 @@ cd ${BAM}
 for i in *.bam
 do
 bamCoverage -b $i -o $[MOTIFBW}/${i%.bam}.bw -p 70 --extendReads 200 --ignoreDuplicates -bl ${BLACKLIST}/Contigs*.bed
+done
+
+###Visualization###
+
+#New folders and path shortcuts
+mkdir -p Plots
+cd Matrix
+
+##Generate plot profiles of all motifs with deeptools plotProfile## 
+
+for i in *_MATRIX.gz
+do
+plotProfile -m $i  \
+			-o ../Plots/${i%_MATRIX.gz}_Profileplot.png \
+			--samplesLabel "${i%_MATRIX.gz} motifs" \
+			--plotType se \
+			-y "Coverage per 50 bp" \
+			--legendLocation "best"
 done
