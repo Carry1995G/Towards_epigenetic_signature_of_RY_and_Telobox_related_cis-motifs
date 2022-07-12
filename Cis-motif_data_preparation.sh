@@ -9,8 +9,8 @@ cd /~
 mkdir -p Motif_GFF
 MOTIFGFF=/Motif_GFF
 
-#annotate all three motifs in a single loop using fuzznuc (EMBOSS)#
-#and save in three seperate gff files#
+#annotate all three motifs in a single loop using fuzznuc (EMBOSS) and save in three seperate gff files#
+#The motif names are saved in the beginning of the file title and remain there throughout the entire analysis#
 
 patterns=("AAACCCTA" "[GA][CA]CCTA[GA]" "CATGCA")
 pnames=("Telobox" "Telolike" "RY")
@@ -76,19 +76,38 @@ do
 bamCoverage -b $i -o $[MOTIFBW}/${i%.bam}.bw -p 70 --extendReads 200 --ignoreDuplicates -bl ${BLACKLIST}/Contigs*.bed
 done
 
-###Visualization###
+####Visualization####
 
-#New folders and path shortcuts
+cd ~
+#new folders and path shortcut
+mkdir -p Matrix
 mkdir -p Plots
+PLOTS=/Plots
+MATRIX=/Matrix
+
+##Compute Matrix with deeptools computeMatrix ##
+cd ${MOTIFBW}
+
+#Generate matrix for each motif (except shuffled motifs as negative control)#
+pnames=("Telobox" "Telolike" "RY")
+for i in *OUTPUT.bw						#only the files of the real motif positioned are selected, not the shuffled positions
+do
+computeMatrix scale-regions \
+				-S $i \
+				-R ./ANNOTATION.bed \
+				-b 1000 -a 1000 \
+				-bl ${BLACKLIST}/Contigs*.bed \
+				-o ${MATRIX}/${i%.bw}MATRIX.gz
+done
+
+##Generate plot profiles of the matrices with deeptools plotProfile## 
 cd Matrix
 
-##Generate plot profiles of all motifs with deeptools plotProfile## 
-
-for i in *_MATRIX.gz
+for i in *MATRIX.gz
 do
 plotProfile -m $i  \
-			-o ../Plots/${i%_MATRIX.gz}_Profileplot.png \
-			--samplesLabel "${i%_MATRIX.gz} motifs" \
+			-o ${PLOTS}/${i%MATRIX.gz}PLOT.png \
+			--samplesLabel "${i%MATRIX.gz} motifs" \ #removes end of file name so that only motif name remains
 			--plotType se \
 			-y "Coverage per 50 bp" \
 			--legendLocation "best"
