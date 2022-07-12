@@ -1,10 +1,10 @@
-# Towards_epigenetic_signature_of_RY_and_Telobox_related_cis-motifs #
+# Towards epigenetic signature of RY and Telobox related cis-motifs 
 
 Welcome,
 here you can find the code I more detailed description on the code I used for my master's thesis.
 
 
-##Workflow:
+## Workflow:
 
 1. [Data Download & Blacklists](/1.Data_Download_Blacklists.bash)
 
