@@ -4,7 +4,7 @@ Welcome,
 here you can find the code I more detailed description on the code I used for my master's thesis.
 
 
-##Workflow: ##
+##Workflow:
 
 1. [Data Download & Blacklists](/1.Data_Download_Blacklists.bash)
 
