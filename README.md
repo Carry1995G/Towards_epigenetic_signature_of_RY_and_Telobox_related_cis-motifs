@@ -15,7 +15,6 @@ These two scripts can be run in parallel:
 2. [Chromatin data preparation](/2b.Chromatin_data_preparation.sh)
 
 As soon as 2a and 2b are done, this script can be used:
-
 3. Motif distribution in H3K27me3+ and H3K27me3- genes 
 
 Next comes the GAT Analysis with 4.3 run in R.
