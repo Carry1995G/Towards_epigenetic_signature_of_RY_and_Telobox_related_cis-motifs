@@ -6,7 +6,8 @@ here you can find the code I more detailed description on the code I used for my
 
 ##Workflow: ##
 
-1. Data Download & Blacklists
+1. [Data Download & Blacklists](/1.Data_Download_Blacklists.bash)
+
 
 These scripts can be run in parallel:
 2a Cis-motif Annotation   OR
